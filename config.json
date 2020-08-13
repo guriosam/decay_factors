@@ -1,0 +1,31 @@
+{
+  "tokens": [
+    {
+      "username": "guriosam",
+      "token": "ff09e609b660b1973ebdefbc41ff76090e4b6c84"
+    }
+   ],
+  "projects": [
+    {
+      "owner": "",
+      "repo": "dubbo"
+    },
+    {
+      "owner": "",
+      "repo": ""
+    },
+    {
+      "owner": "prestodb",
+      "repo": "presto"
+    },
+    {
+      "owner": "netty",
+      "repo": "netty"
+    },
+    {
+      "owner": "ReactiveX",
+      "repo": "RxJava"
+    }
+  ],
+  "output_path": "D:/caio/decay_factors/"
+}
