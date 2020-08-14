@@ -1,6 +1,3 @@
-from os import listdir
-from os.path import isfile, join
-
 from utils.csv_handler import CSVHandler
 from utils.json_handler import JSONHandler
 
@@ -42,6 +39,20 @@ def _get_commits_by_class(renames, commits_classes):
     return commits_by_class
 
 
+def _get_class_ids(commits_classes):
+    print("Get Class IDs")
+    ids = {}
+    for commit_class in commits_classes:
+        if commit_class[3] not in ids.keys():
+            ids[commit_class[3]] = commit_class[0].split('_')[0]
+        if commit_class[2] == 'None':
+            continue
+        if commit_class[2] not in ids.keys():
+            ids[commit_class[2]] = commit_class[0].split('_')[0]
+
+    return ids
+
+
 class ExperienceMetrics:
 
     def __init__(self, project):
@@ -52,7 +63,6 @@ class ExperienceMetrics:
     def number_of_pull_requests(self):
         # Number of pull requests that contained changes to a class.
         mypath = self.path + self.project + '/'
-        json = JSONHandler(mypath)
 
         csv = CSVHandler()
         pulls_commits = csv.open_csv(mypath + 'pulls_commits/' + self.project + '_commits_by_pull_request.csv')
@@ -69,6 +79,8 @@ class ExperienceMetrics:
 
         commits_by_class = _get_commits_by_class(renames, commits_classes)
 
+        class_ids = _get_class_ids(commits_classes)
+
         pulls_by_class = {}
         for commit_class_key in commits_by_class.keys():
             commit_list = commits_by_class[commit_class_key]
@@ -79,17 +91,53 @@ class ExperienceMetrics:
 
                     pulls_by_class[commit_class_key].extend(commits_in_pulls[commit])
 
-        num_pulls = []
+        num_pulls = [['class_id', 'num_pulls']]
         for key in pulls_by_class.keys():
             pulls = pulls_by_class[key]
-            num_pulls.append([key, len(set(pulls))])
+            num_pulls.append([class_ids[key], len(set(pulls))])
 
-        # Save in CSV
-        print(num_pulls)
+        # TODO Save in CSV
+
+        return commits_in_pulls, renames, commits_by_class, pulls_by_class, class_ids, num_pulls
 
     def number_associated_issues(self):
         # Number of issues associated to pull requests that contained changes to a class.
-        pass
+
+        mypath = self.path + self.project + '/'
+        _, _, _, pulls_by_class, class_ids, _ = self.number_of_pull_requests()
+
+        csv = CSVHandler()
+        pulls_of_issues = csv.open_csv(mypath + self.project + '_pulls_of_issues.csv')
+
+        associated_issues = {}
+
+        for row in pulls_of_issues:
+            if row[1] not in associated_issues.keys():
+                associated_issues[row[1]] = set()
+
+            associated_issues[row[1]].add(row[0])
+
+
+        issues_by_class = {}
+        for pull_class in pulls_by_class:
+            pulls = pulls_by_class[pull_class]
+            for pull in pulls:
+                if pull_class not in issues_by_class.keys():
+                    issues_by_class[pull_class] = 0
+
+                if pull in associated_issues.keys():
+                    issues_by_class[pull_class] += len(associated_issues[pull])
+                else:
+                    issues_by_class[pull_class] += 1
+
+        issues_num = [['class_id', 'issue_num']]
+        for key in issues_by_class.keys():
+            issues = issues_by_class[key]
+            issues_num.append([class_ids[key], issues])
+
+        # TODO Save in CSV
+
+        return issues_num
 
     def percentage_of_related_comments(self):
         # Percentage of messages related to a file on pull requests that contain modifications to that same file.

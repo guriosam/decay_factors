@@ -18,8 +18,11 @@ class Main:
 
             print(self.project_name)
 
-            experience = ExperienceMetrics(project)
-            experience.number_of_pull_requests()
+            # experience = ExperienceMetrics(project)
+            # experience.number_of_pull_requests()
+            # experience.number_associated_issues()
+            words = WordsInDiscussion(project)
+
 
 
 main = Main()
