@@ -1,4 +1,5 @@
 from metrics.experience import ExperienceMetrics
+from metrics.words_in_discussion import WordsInDiscussion
 from utils.json_handler import JSONHandler
 
 
@@ -18,10 +19,12 @@ class Main:
 
             print(self.project_name)
 
-            # experience = ExperienceMetrics(project)
-            # experience.number_of_pull_requests()
+            experience = ExperienceMetrics(project)
+            experience.number_of_pull_requests()
             # experience.number_associated_issues()
-            words = WordsInDiscussion(project)
+            # words = WordsInDiscussion(project)
+            # words.get_comments_in_discussion()
+            # words.get_words_per_comment_in_discussion()
 
 
 

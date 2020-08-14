@@ -1,6 +1,6 @@
 import re, string, unicodedata
 import nltk
-import contractions
+#import contractions
 import inflect
 from bs4 import BeautifulSoup
 
@@ -18,7 +18,7 @@ class TextProcessing():
 
     def replace_contractions(self, text):
         """Replace contractions in string of text"""
-        return contractions.fix(text)
+        return text #contractions.fix(text)
 
     def remove_non_ascii(self, words):
         """Remove non-ASCII characters from list of tokenized words"""
@@ -108,7 +108,7 @@ class TextProcessing():
         text = re.sub('\[[^]]*\]', '', text)
 
         #replace contractions
-        text = contractions.fix(text)
+        #text = contractions.fix(text)
 
         words = nltk.word_tokenize(text)
 
